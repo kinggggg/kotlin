@@ -213,3 +213,6 @@ messages/**)
 
 # for kapt
 -keep class com.intellij.openapi.project.Project { *; }
+
+# for imports dumper in compiler
+-keep class kotlinx.serialization.** { *; }
