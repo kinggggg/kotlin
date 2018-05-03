@@ -19,7 +19,6 @@ package org.jetbrains.kotlin.cli.jvm
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.Disposable
 import org.jetbrains.kotlin.cli.common.CLICompiler
-import org.jetbrains.kotlin.cli.common.CLICompiler.getLibraryFromHome
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.CLITool
 import org.jetbrains.kotlin.cli.common.ExitCode
