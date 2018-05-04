@@ -5965,6 +5965,29 @@ public class QuickFixTestGenerated extends AbstractQuickFixTest {
         }
     }
 
+    @TestMetadata("idea/testData/quickfix/experimental")
+    @TestDataPath("$PROJECT_ROOT")
+    @RunWith(JUnit3RunnerWithInners.class)
+    public static class Experimental extends AbstractQuickFixTest {
+        private void runTest(String testDataFilePath) throws Exception {
+            KotlinTestUtils.runTest(this::doTest, TargetBackend.ANY, testDataFilePath);
+        }
+
+        public void testAllFilesPresentInExperimental() throws Exception {
+            KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("idea/testData/quickfix/experimental"), Pattern.compile("^([\\w\\-_]+)\\.kt$"), TargetBackend.ANY, true);
+        }
+
+        @TestMetadata("basicFunction.kt")
+        public void testBasicFunction() throws Exception {
+            runTest("idea/testData/quickfix/experimental/basicFunction.kt");
+        }
+
+        @TestMetadata("basicFunctionContainingClass.kt")
+        public void testBasicFunctionContainingClass() throws Exception {
+            runTest("idea/testData/quickfix/experimental/basicFunctionContainingClass.kt");
+        }
+    }
+
     @TestMetadata("idea/testData/quickfix/expressions")
     @TestDataPath("$PROJECT_ROOT")
     @RunWith(JUnit3RunnerWithInners.class)
