@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrClassSymbolImpl
+import org.jetbrains.kotlin.ir.util.isEffectivelyExternal
 import org.jetbrains.kotlin.ir.util.transform
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
@@ -39,7 +40,8 @@ class IrClassImpl(
     override val visibility: Visibility,
     override val modality: Modality,
     override val isCompanion: Boolean,
-    override val isData: Boolean
+    override val isData: Boolean,
+    override val isExternal: Boolean
 ) : IrDeclarationBase(startOffset, endOffset, origin),
     IrClass {
 
@@ -48,7 +50,8 @@ class IrClassImpl(
                 startOffset, endOffset, origin, symbol,
                 symbol.descriptor.name, symbol.descriptor.kind,
                 symbol.descriptor.visibility, symbol.descriptor.modality,
-                symbol.descriptor.isCompanionObject, symbol.descriptor.isData
+                symbol.descriptor.isCompanionObject, symbol.descriptor.isData,
+                symbol.descriptor.isEffectivelyExternal()
             )
 
     constructor(startOffset: Int, endOffset: Int, origin: IrDeclarationOrigin, descriptor: ClassDescriptor) :
