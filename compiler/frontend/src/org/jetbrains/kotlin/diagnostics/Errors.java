@@ -313,6 +313,7 @@ public interface Errors {
     DiagnosticFactory0<KtElement> INLINE_CLASS_CONSTRUCTOR_WRONG_PARAMETERS_SIZE = DiagnosticFactory0.create(ERROR);
     DiagnosticFactory0<KtParameter> INLINE_CLASS_CONSTRUCTOR_NOT_FINAL_READ_ONLY_PARAMETER = DiagnosticFactory0.create(ERROR);
     DiagnosticFactory0<PsiElement> INLINE_CLASS_WITH_INITIALIZER = DiagnosticFactory0.create(ERROR);
+    DiagnosticFactory0<KtParameter> VARARG_ON_INLINE_CLASS_TYPE = DiagnosticFactory0.create(ERROR);
 
 
     // Secondary constructors
