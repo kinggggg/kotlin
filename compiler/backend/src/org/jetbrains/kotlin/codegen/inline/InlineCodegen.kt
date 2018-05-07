@@ -33,6 +33,7 @@ import org.jetbrains.kotlin.resolve.calls.checkers.isBuiltInCoroutineContext
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.inline.InlineUtil
 import org.jetbrains.kotlin.resolve.inline.InlineUtil.isInlinableParameterExpression
+import org.jetbrains.kotlin.resolve.isInlineClass
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodGenericSignature
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind
@@ -100,7 +101,10 @@ abstract class InlineCodegen<out T : BaseExpressionCodegen>(
 
     init {
         sourceCompiler.initializeInlineFunctionContext(functionDescriptor)
-        jvmSignature = typeMapper.mapSignatureWithGeneric(functionDescriptor, sourceCompiler.contextKind)
+        jvmSignature = if (functionDescriptor.containingDeclaration.isInlineClass())
+            typeMapper.mapSignatureForInlineErasedClassWithGeneric(functionDescriptor)
+        else
+            typeMapper.mapSignatureWithGeneric(functionDescriptor, sourceCompiler.contextKind)
         isSameModule = sourceCompiler.isCallInsideSameModuleAsDeclared(functionDescriptor)
 
         if (functionDescriptor !is FictitiousArrayConstructor) {
@@ -671,9 +675,7 @@ class PsiInlineCodegen(
     }
 
     override fun processAndPutHiddenParameters(justProcess: Boolean) {
-        if (getMethodAsmFlags(functionDescriptor, sourceCompiler.contextKind, state) and Opcodes.ACC_STATIC == 0) {
-            invocationParamBuilder.addNextParameter(AsmTypes.OBJECT_TYPE, false)
-        }
+        putThisParameter()
 
         for (param in jvmSignature.valueParameters) {
             if (param.kind == JvmMethodParameterKind.VALUE) {
@@ -686,6 +688,15 @@ class PsiInlineCodegen(
         val hiddenParameters = invocationParamBuilder.buildParameters().parameters
 
         delayedHiddenWriting = recordParameterValueInLocalVal(justProcess, false, *hiddenParameters.toTypedArray())
+    }
+
+    private fun putThisParameter() {
+        // TODO: we've already computed jvm signature for callable function, so use it to check ACC_STATIC flag
+        if (functionDescriptor.containingDeclaration.isInlineClass()) return
+
+        if (getMethodAsmFlags(functionDescriptor, sourceCompiler.contextKind, state) and Opcodes.ACC_STATIC == 0) {
+            invocationParamBuilder.addNextParameter(AsmTypes.OBJECT_TYPE, false)
+        }
     }
 
     override fun putClosureParametersOnStack(next: LambdaInfo, functionReferenceReceiver: StackValue?) {

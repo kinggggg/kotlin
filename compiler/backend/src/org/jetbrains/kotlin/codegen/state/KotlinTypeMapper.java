@@ -1099,6 +1099,11 @@ public class KotlinTypeMapper {
     }
 
     @NotNull
+    public JvmMethodGenericSignature mapSignatureForInlineErasedClassWithGeneric(@NotNull FunctionDescriptor f) {
+        return mapSignature(f, OwnerKind.ERASED_INLINE_CLASS, false);
+    }
+
+    @NotNull
     public JvmMethodGenericSignature mapSignatureForBoxMethodOfInlineClass(@NotNull FunctionDescriptor f) {
         return mapSignature(f, OwnerKind.IMPLEMENTATION, true);
     }
